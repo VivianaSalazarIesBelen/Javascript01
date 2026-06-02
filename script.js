@@ -4,14 +4,14 @@ let ordenSeleccionado = 'nombre';
 
 // Cuando la página web se carga por completo
 document.addEventListener("DOMContentLoaded", () => {
-    ordenar(); // Ordena y pinta la lista por primera vez
+    ordenar();
     document.getElementById("btn-guardar").disabled = true; // Desactiva el botón al arrancar
     configurarBoton(); // Prepara los eventos del formulario
 
     // Si el usuario cambia el selector de orden (Nombre / Población)
     document.getElementById('ordenar').addEventListener('change', (e) => {
         ordenSeleccionado = e.target.value; // Guarda la nueva opción
-        ordenar(); // Rearma la lista con el nuevo orden
+        ordenar();
     });
 });
 
@@ -21,7 +21,7 @@ function ordenar() {
 
     listaOrdenada.sort((a, b) => {
         if (ordenSeleccionado === 'nombre') {
-            return a.nombre.localeCompare(b.nombre); // Orden alfabético (A-Z)
+            return a.nombre.localeCompare(b.nombre);
         } else {
             return b.poblacion_total - a.poblacion_total; // De mayor a menor población
         }
@@ -38,7 +38,7 @@ function pintarLista(lista) {
     contenedor.innerHTML = lista.map(c => `
         <button type="button"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center boton-ccaa"
-                id="btn-${c.nombre.replace(/\s+/g, '')}" // ID único sin espacios
+                id="btn-${c.nombre.replace(/\s+/g, '')}" 
                 onclick="seleccionarComunidad('${c.nombre}')">
 
             <span>${c.nombre}</span>
@@ -50,21 +50,20 @@ function pintarLista(lista) {
 
 // Se ejecuta al hacer clic en una comunidad autónoma
 window.seleccionarComunidad = function(nombreComunidad) {
-    // Quita el color azul (.active) a todos los botones
     document.querySelectorAll(".boton-ccaa")
         .forEach(btn => btn.classList.remove("active"));
 
     const encontrada = ccaa.find(c => c.nombre === nombreComunidad); // Busca la comunidad en los datos
-    if (!encontrada) return; // Si no existe, frena el código
+    if (!encontrada) return;
 
     comunidadActual = encontrada; // Guarda la comunidad elegida globalmente
 
-    // Busca el botón clicado por su ID y lo pinta de azul
+    // Busca el botón clicado por su ID y lo pinta
     const idBoton = `btn-${nombreComunidad.replace(/\s+/g, '')}`;
     const botonPresionado = document.getElementById(idBoton);
     if (botonPresionado) botonPresionado.classList.add("active");
 
-    // Rellena los campos del formulario con los datos
+
     document.getElementById("f-comunidad").value = encontrada.nombre;
     document.getElementById("f-capital").value = encontrada.capital;
 
@@ -72,7 +71,7 @@ window.seleccionarComunidad = function(nombreComunidad) {
     inputPresidente.value = encontrada.presidente;
     inputPresidente.readOnly = false; // Permite escribir en el campo del presidente
 
-    // Crea el texto de las provincias en formato lista (•) si existen
+    // Crea el texto de las provincias en formato lista, si existen
     const provinciasTexto = encontrada.provincias.length > 0
         ? encontrada.provincias
             .map(p => `• ${p.nombre} (${p.poblacion.toLocaleString()} hab.)`)
@@ -96,13 +95,13 @@ function configurarBoton() {
         const nuevoPresi = input.value.trim(); // Quita espacios vacíos
 
         if (nuevoPresi === "") {
-            mostrarMensaje("❌ El presidente no puede estar vacío", "red");
+            mostrarMensaje("El presidente no puede estar vacío", "red");
             return;
         }
 
         if (comunidadActual) {
-            comunidadActual.presidente = nuevoPresi; // Guarda el nuevo nombre en los datos originales
-            mostrarMensaje(`✅ Presidente de ${comunidadActual.nombre} actualizado`, "green");
+            comunidadActual.presidente = nuevoPresi;
+            mostrarMensaje(`Presidente de ${comunidadActual.nombre} actualizado`, "green");
         } else {
             alert("Selecciona una comunidad primero");
         }
@@ -116,7 +115,7 @@ function validarBoton() {
     btn.disabled = input.value.trim() === "";
 }
 
-// Muestra las alertas de éxito (verde) o error (rojo) abajo del formulario
+
 function mostrarMensaje(texto, color) {
     let msg = document.getElementById("mensaje-estado");
 
@@ -128,8 +127,8 @@ function mostrarMensaje(texto, color) {
         document.querySelector(".card.p-4").appendChild(msg);
     }
 
-    msg.textContent = texto; // Añade el texto
-    msg.style.color = color; // Añade el color
+    msg.textContent = texto;
+    msg.style.color = color;
 
-    setTimeout(() => { msg.textContent = ""; }, 4000); // Borra el mensaje a los 4 segundos
+    setTimeout(() => { msg.textContent = ""; }, 4000);
 }
