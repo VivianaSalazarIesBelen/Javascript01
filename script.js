@@ -1,40 +1,40 @@
-// Variables para recordar la comunidad seleccionada y el orden de la lista
+
 let comunidadActual = null;
 let ordenSeleccionado = 'nombre';
 
 // Cuando la página web se carga por completo
 document.addEventListener("DOMContentLoaded", () => {
     ordenar();
-    document.getElementById("btn-guardar").disabled = true; // Desactiva el botón al arrancar
-    configurarBoton(); // Prepara los eventos del formulario
+    document.getElementById("btn-guardar").disabled = true;
+    configurarBoton();
 
-    // Si el usuario cambia el selector de orden (Nombre / Población)
+
     document.getElementById('ordenar').addEventListener('change', (e) => {
-        ordenSeleccionado = e.target.value; // Guarda la nueva opción
+        ordenSeleccionado = e.target.value;
         ordenar();
     });
 });
 
 // Ordena los datos de las comunidades
 function ordenar() {
-    let listaOrdenada = [...ccaa]; // Hace una copia de los datos para no romper los originales
+    let listaOrdenada = [...ccaa];
 
     listaOrdenada.sort((a, b) => {
         if (ordenSeleccionado === 'nombre') {
             return a.nombre.localeCompare(b.nombre);
         } else {
-            return b.poblacion_total - a.poblacion_total; // De mayor a menor población
+            return b.poblacion_total - a.poblacion_total;
         }
     });
 
-    pintarLista(listaOrdenada); // Pasa los datos ordenados a la pantalla
+    pintarLista(listaOrdenada);
 }
 
 // Genera los botones de la lista en el HTML
 function pintarLista(lista) {
     const contenedor = document.getElementById("lista-comunidades");
 
-    // Convierte cada comunidad en un botón HTML
+
     contenedor.innerHTML = lista.map(c => `
         <button type="button"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center boton-ccaa"
@@ -45,7 +45,7 @@ function pintarLista(lista) {
             <span class="badge bg-secondary rounded-pill">${c.poblacion_total.toLocaleString()}</span>
 
         </button>
-    `).join(""); // Junta todos los botones en un solo bloque de texto
+    `).join("");
 }
 
 // Se ejecuta al hacer clic en una comunidad autónoma
@@ -53,10 +53,10 @@ window.seleccionarComunidad = function(nombreComunidad) {
     document.querySelectorAll(".boton-ccaa")
         .forEach(btn => btn.classList.remove("active"));
 
-    const encontrada = ccaa.find(c => c.nombre === nombreComunidad); // Busca la comunidad en los datos
+    const encontrada = ccaa.find(c => c.nombre === nombreComunidad);
     if (!encontrada) return;
 
-    comunidadActual = encontrada; // Guarda la comunidad elegida globalmente
+    comunidadActual = encontrada;
 
     // Busca el botón clicado por su ID y lo pinta
     const idBoton = `btn-${nombreComunidad.replace(/\s+/g, '')}`;
@@ -69,7 +69,7 @@ window.seleccionarComunidad = function(nombreComunidad) {
 
     const inputPresidente = document.getElementById("f-presidente");
     inputPresidente.value = encontrada.presidente;
-    inputPresidente.readOnly = false; // Permite escribir en el campo del presidente
+    inputPresidente.readOnly = false;
 
     // Crea el texto de las provincias en formato lista, si existen
     const provinciasTexto = encontrada.provincias.length > 0
@@ -78,9 +78,9 @@ window.seleccionarComunidad = function(nombreComunidad) {
             .join("\n")
         : "Sin provincias registradas.";
 
-    document.getElementById("f-provincia").value = provinciasTexto; // Muestra las provincias
+    document.getElementById("f-provincia").value = provinciasTexto;
 
-    validarBoton(); // Activa el botón de guardar si el input tiene texto
+    validarBoton();
 };
 
 // Configura el botón de guardar y el input del presidente
@@ -88,11 +88,11 @@ function configurarBoton() {
     const btn = document.getElementById("btn-guardar");
     const input = document.getElementById("f-presidente");
 
-    input.addEventListener("input", validarBoton); // Valida el botón cada vez que escribes/borras
+    input.addEventListener("input", validarBoton);
 
     // Al hacer clic en Guardar Cambios
     btn.addEventListener("click", () => {
-        const nuevoPresi = input.value.trim(); // Quita espacios vacíos
+        const nuevoPresi = input.value.trim();
 
         if (nuevoPresi === "") {
             mostrarMensaje("El presidente no puede estar vacío", "red");
@@ -119,7 +119,7 @@ function validarBoton() {
 function mostrarMensaje(texto, color) {
     let msg = document.getElementById("mensaje-estado");
 
-    if (!msg) { // Si no existe el contenedor de mensajes, lo crea en el HTML
+    if (!msg) {
         msg = document.createElement("div");
         msg.id = "mensaje-estado";
         msg.style.marginTop = "10px";
